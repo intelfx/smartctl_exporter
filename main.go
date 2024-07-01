@@ -121,7 +121,7 @@ func scanDevices(logger log.Logger) []Device {
 	scanDevices := json.Get("devices").Array()
 	var scanDeviceResult []Device
 	for _, d := range scanDevices {
-		deviceName := extractDiskName(strings.TrimSpace(d.Get("info_name").String()))
+		deviceName := extractDiskName(strings.TrimSpace(d.Get("info_name").String()), logger)
 		if filter.ignored(deviceName) {
 			level.Info(logger).Log("msg", "Ignoring device", "name", deviceName)
 		} else {
