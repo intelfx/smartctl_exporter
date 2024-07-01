@@ -43,13 +43,58 @@ type SMARTctl struct {
 }
 
 func extractDiskName(input string) string {
-	re := regexp.MustCompile(`^(?:/dev/\S+/\S+\s\[|/dev/|\[)(?:\s\[|)(?P<disk>[a-z0-9_]+)(?:\].*|)$`)
-	match := re.FindStringSubmatch(input)
+	itemRe := regexp.MustCompile(`(?P<devpath>/dev/\S+)`)
+	match := itemRe.FindStringSubmatch(input)
+	if match != nil {
+		return match[itemRe.SubexpIndex("devpath")]
+	}
+	firstWord, _, _ := strings.Cut(input, " ")
+	return firstWord
+
+	/*
+	// split informal name into items, each of which is either a /dev-path
+	// or a [bracketed] description.
+	//
+	var items []string
+	itemRe := regexp.MustCompile(`((?P<devpath>/dev/\S+)|\[(?P<description>[^]]+)\])`)
+	devpathRe := regexp.MustCompile(`^/dev/((?P<bus>[^/]+)/(?P<dev>[^/]+)|(?P<devname>[^/]+))$`)
+
+	matches := itemRe.FindAllStringSubmatch(input, -1)
+
+	for _, match := range matches {
+		if devpath := match[itemRe.SubexpIndex("devpath")]; devpath != "" {
+			level.Debug(logger).Log("msg", "extractDiskName found devpath", "input", input, "devpath", devpath)
+
+			if match2 := devpathRe.FindStringSubmatch(devpath); match2 != nil {
+				bus := match2[devpathRe.SubexpIndex("bus")]
+				dev := match2[devpathRe.SubexpIndex("dev")]
+				if bus != "" && dev != "" {
+					level.Debug(logger).Log("msg", "extractDiskName devpath is bus+dev",
+						"input", input, "devpath", devpath, "bus", bus, "dev", dev)
+					items = append(items, bus, dev)
+				} else if devname := match2[devpathRe.SubexpIndex("devname")]; devname != "" {
+					level.Debug(logger).Log("msg", "extractDiskName devpath is devname",
+						"input", input, "devpath", devpath, "devname", devname)
+					items = append(items, devname)
+				} else {
+					panic(devpath)
+				}
+			} else {
+
+			}
+
+		}
+		if description := match[itemRe.SubexpIndex("description")]; description != "" {
+			level.Debug(logger).Log("msg", "extractDiskName found description", "input", input, "description", description)
+		}
+	}
 
 	if len(match) > 0 {
-		return match[re.SubexpIndex("disk")]
+		return match[itemRe.SubexpIndex("disk")]
 	}
 	return ""
+
+	 */
 }
 
 // NewSMARTctl is smartctl constructor
