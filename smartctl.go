@@ -44,15 +44,14 @@ type SMARTctl struct {
 }
 
 func extractDiskName(input string, logger log.Logger) string {
-	itemRe := regexp.MustCompile(`(?P<devpath>/dev/\S+)`)
-	match := itemRe.FindStringSubmatch(input)
-	if match != nil {
-		return match[itemRe.SubexpIndex("devpath")]
-	}
-	firstWord, _, _ := strings.Cut(input, " ")
-	return firstWord
+	//itemRe := regexp.MustCompile(`(?P<devpath>/dev/\S+)`)
+	//match := itemRe.FindStringSubmatch(input)
+	//if match != nil {
+	//	return match[itemRe.SubexpIndex("devpath")]
+	//}
+	//firstWord, _, _ := strings.Cut(input, " ")
+	//return firstWord
 
-	/*
 	// split informal name into items, each of which is either a /dev-path
 	// or a [bracketed] description.
 	//
@@ -61,7 +60,6 @@ func extractDiskName(input string, logger log.Logger) string {
 	devpathRe := regexp.MustCompile(`^/dev/((?P<bus>[^/]+)/(?P<dev>[^/]+)|(?P<devname>[^/]+))$`)
 
 	matches := itemRe.FindAllStringSubmatch(input, -1)
-
 	for _, match := range matches {
 		if devpath := match[itemRe.SubexpIndex("devpath")]; devpath != "" {
 			level.Debug(logger).Log("msg", "extractDiskName found devpath", "input", input, "devpath", devpath)
@@ -94,8 +92,6 @@ func extractDiskName(input string, logger log.Logger) string {
 		return match[itemRe.SubexpIndex("disk")]
 	}
 	return ""
-
-	 */
 }
 
 // NewSMARTctl is smartctl constructor
