@@ -93,7 +93,7 @@ func readSMARTctl(logger *slog.Logger, device Device, wg *sync.WaitGroup) {
 
 func readSMARTctlDevices(logger *slog.Logger) gjson.Result {
 	logger.Debug("Scanning for devices")
-	var scanArgs := []string{
+	scanArgs := []string{
 		"--json",
 		"--scan-open",
 	}
